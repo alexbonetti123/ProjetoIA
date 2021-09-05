@@ -3,7 +3,7 @@ module.exports = class Labirinto {
         this.linhas = linhas
         this.colunas = colunas
         this.matriz = [[],[],[]]
-        this.listaPosicoes = [{}]
+        this.listaPosicoes = []
     }
     iniciarLabirinto(x, y) {
         this.matriz[x][y] = 'A'
@@ -11,16 +11,22 @@ module.exports = class Labirinto {
         for(let i = 0; i < this.linhas; i++){
             for(let j = 0; j < this.colunas; j++){
                 let valor = Math.round(Math.random())
-                let status = 'S'
-                if(valor === 1 && this.matriz[i][j] !== 'A'){
-                    status = 'L'
-                    this.matriz[i][j] = status
+                if(valor === 1 && this.matriz[i][j] != 'A'){
+                    this.criarLista(i, j, 'L')
+                    this.matriz[i][j] = 'L'
                 }
-                if(valor === 0 && this.matriz[i][j] !== 'A'){
-                    status = 'S'
-                    this.matriz[i][j] = status
+                if(valor === 0 && this.matriz[i][j] != 'A'){
+                    this.criarLista(i, j, 'S')
+                    this.matriz[i][j] = 'S'
                 }
-                this.criarLista(i, j, status)
+            }
+        }
+    }
+    getProxSujo() {
+        for(let i = 0; i < this.listaPosicoes.length; i++){
+            let elem = this.listaPosicoes[i]
+            if(elem.status == 'S'){
+                return {x:elem.linha, y:elem.coluna}
             }
         }
     }

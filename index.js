@@ -6,3 +6,5 @@ let ag = new Agente(0, 0, lab)
 lab.iniciarLabirinto(ag.getPosX(), ag.getPosY())
 
 ag.escreverLabirinto()
+
+console.log(ag.proxSujo())

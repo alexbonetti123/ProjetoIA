@@ -11,6 +11,10 @@ module.exports = class Agente {
     getPosY() {
         return this.posY
     }
+    proxSujo() {
+        let res = this.labirinto.getProxSujo()
+        return res
+    }
     escreverLabirinto() {
         console.log(this.labirinto.escreverLista())
     }
