@@ -1,4 +1,67 @@
-module.exports = class Labirinto {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body >
+    <div id="root">
+        <table id="tabela">
+
+        </table>
+    </div>
+</body>
+<script>
+    class Agente {
+    constructor(posX, posY, labirinto) {
+        this.posX = posX
+        this.posY = posY
+        this.labirinto = labirinto
+    }
+    getPosX() {
+        return this.posX
+        
+    }
+    getPosY() {
+        return this.posY
+    }
+    proxSujo() {
+        let res = this.labirinto.getProxSujo()
+        return res
+    }
+    async moverAgente() {
+        let retorno = await this.labirinto.movimentar({x:this.posX, y:this.posY})
+        if(retorno !== undefined) {
+            console.log("Retorno: " + retorno.x + ", " + retorno.y)
+            this.posX = retorno.x
+            this.posY = retorno.y
+        }
+    }
+    async inicarLimpeza() {
+        this.labirinto.ordenarLista()
+       for(let i = 0; i < this.labirinto.getTamanhoLista(); i++){
+           this.moverAgente()
+           await this.sleep(2000)
+       }
+       this.escreverLabirinto()
+       await this.sleep(5000)
+       console.log("Minha eficiência foi de: " + this.verificarPorcetangemEficiencia() + "%")
+    }
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    verificarPorcetangemEficiencia() {
+        let pct = 100 * (this.labirinto.getLimpos() / (this.labirinto.linhas * this.labirinto.colunas))
+        return pct.toFixed(2)
+    }
+    escreverLabirinto() {
+        this.labirinto.escreverLabirinto()
+    }
+    
+}
+class Labirinto {
     constructor(linhas, colunas) {
         this.linhas = linhas
         this.colunas = colunas
@@ -7,6 +70,7 @@ module.exports = class Labirinto {
         this.reintegrados = []
         this.sujos = 0
         this.limpos = 0
+        this.contador = 0
     }
     getTamanhoLista() {
         return this.listaPosicoes.length
@@ -93,7 +157,6 @@ module.exports = class Labirinto {
             if(limpou === false){ 
                 return {x, y}
             }    
-            
         }
         
     }
@@ -116,6 +179,26 @@ module.exports = class Labirinto {
         })
     }*/
     escreverLabirinto(){
-        console.log(this.matriz)
+        this.matriz.map(valor => {
+            let tr = document.createElement("tr")
+            valor.forEach(i => {
+                let td = document.createElement("td")
+                td.innerText = i
+                tr.appendChild(td)
+                document.getElementById("tabela").appendChild(tr)
+            })
+            
+            
+        })
+        let espaco = document.createElement("h1")
+            espaco.innerHTML = ""
+            document.getElementById("tabela").appendChild(espaco)
+           
     }
 }
+let lab = new Labirinto(3, 3);
+let ag = new Agente(0, 0, lab)
+lab.iniciarLabirinto(ag.getPosX(), ag.getPosY())
+ag.inicarLimpeza()
+</script>
+</html>
