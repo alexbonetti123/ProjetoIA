@@ -1,0 +1,1 @@
+Para execução do projeto, abrir o arquivo 'index.html' no navegador
