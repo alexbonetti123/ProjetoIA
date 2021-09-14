@@ -1,4 +1,103 @@
-module.exports = class Labirinto {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .input {
+            width:200px;
+            height: 30px;
+            border-radius: 3px;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body >
+    <div id="root">
+        <h1 id="titulo">Digite o tamanho do labirinto</h1>
+        <input class="input" id="linha" type="text" placeholder="Digite o numero de linhas"/>
+        <input class="input" id="coluna" type="text" placeholder="Digite o número de colunas"/>
+        <button id="btn" onclick="main()">Iniciar Limpeza</button>
+        <table hidden id="tabela" border="1" style="padding: 20px; justify-content: center;align-items: center;">
+
+        </table>
+    </div>
+</body>
+<script>
+    class Agente {
+    constructor(posX, posY, labirinto) {
+        this.posX = posX
+        this.posY = posY
+        this.labirinto = labirinto
+    }
+    getPosX() {
+        return this.posX
+        
+    }
+    getPosY() {
+        return this.posY
+    }
+    proxSujo() {
+        let res = this.labirinto.getProxSujo()
+        return res
+    }
+    async moverAgente() {
+        let retorno = await this.labirinto.movimentar({x:this.posX, y:this.posY})
+        if(retorno !== undefined) {
+            console.log("Retorno: " + retorno.x + ", " + retorno.y)
+            this.posX = retorno.x
+            this.posY = retorno.y
+        }
+    }
+    async inicarLimpeza() {
+        this.labirinto.ordenarLista()
+       while(this.labirinto.listaPosicoes.length > 0 || this.labirinto.listaReintegrados.length > 0){
+            this.moverAgente()
+           await this.sleep(3000)
+       }
+       this.escreverLabirinto()
+       await this.sleep(2000)
+       let eficiencia = this.verificarPorcetangemEficiencia()
+       alert("A eficiência do robô foi de " + eficiencia + "%")
+       /*E = eficiencia
+        E > 90 -> LOL, perfeito
+        E >= 70 -> Podia ser muito melhor
+        E >= 50 -> Ta na média
+        E < 50 -> hiper inteligente? kkkkk
+       */
+       if(eficiencia == 100)
+        alert("Classificação: Só não é melhor que um pé de bergamota carregado")
+        else if(eficiencia >= 90 && eficiencia < 100)
+        alert("Tá saindo da jaula o monstro")
+        else if(eficiencia >= 70 && eficiencia < 90)
+        alert("Classificação: Moises, não consegue né?")
+        else if(eficiencia < 70 && eficiencia >= 50)
+        alert("Classificação: Cuidado, hein! Você tá na média")
+        else
+        alert("Classificação: Hiper inteligente? kkkkk")
+        
+
+    }
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    verificarPorcetangemEficiencia() {
+        let totalElem = this.labirinto.linhas * this.labirinto.colunas
+        let limpos = this.labirinto.getLimpos() +1
+        let pct = limpos / totalElem * 100
+        if(isNaN(pct))
+            return 100
+        return pct.toFixed(2)
+    }
+    escreverLabirinto() {
+        this.labirinto.escreverLabirinto()
+    }
+    
+}
+class Labirinto {
     constructor(linhas, colunas) {
         this.linhas = linhas
         this.colunas = colunas
@@ -134,3 +233,15 @@ module.exports = class Labirinto {
            
     }
 }
+function main () {
+    let btn = document.getElementById("btn").hidden = true
+    let linhas = document.getElementById("linha")
+    let colunas = document.getElementById("coluna")
+    document.getElementById("tabela").hidden = false
+    let lab = new Labirinto(linhas.value, colunas.value);
+    let ag = new Agente(0, 0, lab)
+    lab.iniciarLabirinto(ag.getPosX(), ag.getPosY())
+    ag.inicarLimpeza()
+}
+</script>
+</html>

@@ -25,21 +25,46 @@ module.exports = class Agente {
     }
     async inicarLimpeza() {
         this.labirinto.ordenarLista()
-       for(let i = 0; i < this.labirinto.getTamanhoLista(); i++){
-           this.moverAgente()
-           await this.sleep(5000)
+       while(this.labirinto.listaPosicoes.length > 0 || this.labirinto.listaReintegrados.length > 0){
+            this.moverAgente()
+           await this.sleep(3000)
        }
+       this.escreverLabirinto()
        await this.sleep(2000)
-       console.log("Minha eficiência foi de: " + this.verificarPorcetangemEficiencia() + "%")
+       let eficiencia = this.verificarPorcetangemEficiencia()
+       alert("A eficiência do robô foi de " + eficiencia + "%")
+       /*E = eficiencia
+        E > 90 -> LOL, perfeito
+        E >= 70 -> Podia ser muito melhor
+        E >= 50 -> Ta na média
+        E < 50 -> hiper inteligente? kkkkk
+       */
+       if(eficiencia == 100)
+        alert("Classificação: Só não é melhor que um pé de bergamota carregado")
+        else if(eficiencia >= 90 && eficiencia < 100)
+        alert("Tá saindo da jaula o monstro")
+        else if(eficiencia >= 70 && eficiencia < 90)
+        alert("Classificação: Moises, não consegue né?")
+        else if(eficiencia < 70 && eficiencia >= 50)
+        alert("Classificação: Cuidado, hein! Você tá na média")
+        else
+        alert("Classificação: Hiper inteligente? kkkkk")
+        
+
     }
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
     verificarPorcetangemEficiencia() {
-        let pct = 100 * (this.labirinto.getLimpos() / (this.labirinto.linhas * this.labirinto.colunas))
+        let totalElem = this.labirinto.linhas * this.labirinto.colunas
+        let limpos = this.labirinto.getLimpos() +1
+        let pct = limpos / totalElem * 100
+        if(isNaN(pct))
+            return 100
         return pct.toFixed(2)
     }
     escreverLabirinto() {
         this.labirinto.escreverLabirinto()
     }
+    
 }

@@ -8,3 +8,5 @@ lab.iniciarLabirinto(ag.getPosX(), ag.getPosY())
 ag.inicarLimpeza()
 
 
+
+
