@@ -76,7 +76,6 @@ module.exports = class Labirinto {
         let limpou = false
         let elemento = this.getProxSujo()
         //Testando se posso mover para cima ou para baixo
-        console.log(elemento)
         if(elemento.status === 'S'){
             if((elemento.linha - x === 1 || elemento.linha - x === -1) && limpou === false){
                 this.matriz[x][y] = 'L'
@@ -115,22 +114,6 @@ module.exports = class Labirinto {
     
    
     escreverLabirinto(){
-        this.matriz.map(valor => {
-            let tr = document.createElement("tr")
-            
-            valor.forEach(i => {
-                let td = document.createElement("td")
-                td.innerText = i
-                td.style.padding = "30px"
-                tr.appendChild(td)
-                document.getElementById("tabela").appendChild(tr)
-            })
-            
-            
-        })
-        let espaco = document.createElement("h1")
-            espaco.innerHTML = ""
-            document.getElementById("tabela").appendChild(espaco)
-           
+        console.log(this.matriz)
     }
 }
